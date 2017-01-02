@@ -114,6 +114,44 @@ def tinyMazeSearch(problem):
     return [s, s, w, s, w, w, s, w]
 
 
+def search(problem, func, heuristic=None):
+    """The common search function"""
+    # initiate closed list and open list
+    closedList = set()
+    if func == "dfs":  # depthFirstSearch
+        openList = util.Stack()
+    elif func == "bfs":  # breadthFirstSearch
+        openList = util.Queue()
+    elif func == "ucs" or func == "astar":  # uniformCostSearch or aStarSearch
+        openList = util.PriorityQueue()
+    else:
+        return
+    # first step: put start node into open list
+    startNode = Node(problem.getStartState(), [], 0, 0, problem)
+    if func == "dfs" or func == "bfs":
+        openList.push(startNode)
+    elif func == "ucs":
+        openList.push(startNode, startNode.cost)
+    elif func == "astar":
+        openList.push(startNode, startNode.cost + startNode.heuristic)
+    # loop from step 2 to step 6
+    while True:
+        if openList.isEmpty():
+            return False
+        node = openList.pop()
+        if problem.isGoalState(node.state):
+            return node.path
+        if node.state not in closedList:
+            closedList.add(node.state)
+            for childNode in node.getSuccessors(heuristic):
+                if func == "dfs" or func == "bfs":
+                    openList.push(childNode)
+                elif func == "ucs":
+                    openList.push(childNode, childNode.cost)
+                elif func == "astar":
+                    openList.push(childNode, childNode.cost + childNode.heuristic)
+
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first
@@ -129,66 +167,19 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
 
     """
-
-    closedList = set()
-    openList = util.Stack()
-
-    startNode = Node(problem.getStartState(), [], 0, 0, problem)
-    openList.push(startNode)
-
-    while True:
-        if openList.isEmpty():
-            return False
-        node = openList.pop()
-        if problem.isGoalState(node.state):
-            return node.path
-        if node.state not in closedList:
-            closedList.add(node.state)
-            for childNode in node.getSuccessors():
-                openList.push(childNode)
+    return search(problem, "dfs")
 
 
 def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
-
-    closedList = set()
-    openList = util.Queue()
-
-    startNode = Node(problem.getStartState(), [], 0, 0, problem)
-    openList.push(startNode)
-
-    while True:
-        if openList.isEmpty():
-            return False
-        node = openList.pop()
-        if problem.isGoalState(node.state):
-            return node.path
-        if node.state not in closedList:
-            closedList.add(node.state)
-            for childNode in node.getSuccessors():
-                openList.push(childNode)
+    return search(problem, "bfs")
 
 
 def uniformCostSearch(problem):
-    "Search the node of least total cost first. "
-
-    closedList = set()
-    openList = util.PriorityQueue()
-
-    startNode = Node(problem.getStartState(), [], 0, 0, problem)
-    openList.push(startNode, startNode.cost)
-    while True:
-        if openList.isEmpty():
-            return False
-        node = openList.pop()
-        if problem.isGoalState(node.state):
-            return node.path
-        if node.state not in closedList:
-            closedList.add(node.state)
-            for childNode in node.getSuccessors():
-                openList.push(childNode, childNode.cost)
+    """Search the node of least total cost first. """
+    return search(problem, "ucs")
 
 
 def nullHeuristic(state, problem=None):
@@ -200,24 +191,8 @@ def nullHeuristic(state, problem=None):
 
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    "Search the node that has the lowest combined cost and heuristic first."
-
-    closedList = set()
-    openList = util.PriorityQueue()
-
-    startNode = Node(problem.getStartState(), [], 0, 0, problem)
-    openList.push(startNode, startNode.cost + startNode.heuristic)
-
-    while True:
-        if openList.isEmpty():
-            return False
-        node = openList.pop()
-        if problem.isGoalState(node.state):
-            return node.path
-        if node.state not in closedList:
-            closedList.add(node.state)
-            for childNode in node.getSuccessors(heuristic):
-                openList.push(childNode, childNode.cost + childNode.heuristic)
+    """Search the node that has the lowest combined cost and heuristic first."""
+    return search(problem, "astar", heuristic)
 
 
 # Abbreviations

@@ -284,6 +284,7 @@ class CornersProblem(search.SearchProblem):
         """
         Stores the walls, pacman's starting position and corners.
         """
+        self.startingGameState = startingGameState
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height - 2, self.walls.width - 2
@@ -378,7 +379,7 @@ def cornersHeuristic(state, problem):
     top = problem.corners[1][1]
     right = problem.corners[2][0]
     x, y = state[0]
-    mDistance = lambda a: util.manhattanDistance((x, y), a)
+    mDistance = lambda a: mazeDistance((x, y), a, problem.startingGameState)
     goalCount = 0
     for corner in state[1]:
         if corner:
