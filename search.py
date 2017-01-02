@@ -65,7 +65,7 @@ class SearchProblem:
         util.raiseNotDefined()
 
 
-class Node():
+class Node:
     """
     A container storing the current state of a node, the list 
     of  directions that need to be followed from the start state to
@@ -117,7 +117,7 @@ def tinyMazeSearch(problem):
 def search(problem, func, heuristic=None):
     """The common search function"""
     # initiate closed list and open list
-    closedList = set()
+    closedList = []
     if func == "dfs":  # depthFirstSearch
         openList = util.Stack()
     elif func == "bfs":  # breadthFirstSearch
@@ -142,7 +142,7 @@ def search(problem, func, heuristic=None):
         if problem.isGoalState(node.state):
             return node.path
         if node.state not in closedList:
-            closedList.add(node.state)
+            closedList.append(node.state)
             for childNode in node.getSuccessors(heuristic):
                 if func == "dfs" or func == "bfs":
                     openList.push(childNode)
