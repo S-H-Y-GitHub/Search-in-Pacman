@@ -80,13 +80,6 @@ class Node:
         self.heuristic = heuristic
         self.problem = problem
 
-    def __str__(self):
-        string = "Current State: "
-        string += __str__(self.state)
-        string += "\n"
-        # string == "Path: " + self.path + "\n"
-        return string
-
     def getSuccessors(self, heuristicFunction=None):
         children = []
         for successor in self.problem.getSuccessors(self.state):

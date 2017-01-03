@@ -379,7 +379,7 @@ def cornersHeuristic(state, problem):
     top = problem.corners[1][1]
     right = problem.corners[2][0]
     x, y = state[0]
-    mDistance = lambda a: mazeDistance((x, y), a, problem.startingGameState)
+    mDistance = lambda a: util.manhattanDistance((x, y), a)
     goalCount = 0
     for corner in state[1]:
         if corner:
@@ -541,13 +541,11 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** MY CODE BEGINS ***"
-    try:
-        c = foodGrid.asList()
-        a = map(lambda x: mazeDistance(position, x, problem.startingGameState), c)
-        b = tuple(a)
-        return max(b)
-    except Exception as e:
+    food = foodGrid.asList()
+    if len(food) == 0:
         return 0
+    dist = map(lambda x: mazeDistance(position, x, problem.startingGameState), food)
+    return max(dist)
     "*** MY CODE ENDS ***"
 
 
@@ -570,14 +568,18 @@ class ClosestDotSearchAgent(SearchAgent):
         print 'Path found with cost %d.' % len(self.actions)
 
     def findPathToClosestDot(self, gameState):
-        "Returns a path (a list of actions) to the closest dot, starting from gameState"
+        """
+        Returns a path (a list of actions) to the closest dot, starting from
+        gameState.
+        """
         # Here are some useful elements of the startState
         startPosition = gameState.getPacmanPosition()
         food = gameState.getFood()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-        return search.uniformCostSearch(problem)
 
+        "*** YOUR CODE HERE ***"
+        util.raiseNotDefined()
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -611,8 +613,9 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         that will complete the problem definition.
         """
         x, y = state
-        return state in self.food.asList()
 
+        "*** YOUR CODE HERE ***"
+        util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
     """
